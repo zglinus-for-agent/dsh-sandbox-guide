@@ -15,7 +15,7 @@ import z from "@deepseek-ai/schemastery";
 import { defineTool } from "@deepseek-ai/dsh-tools";
 
 export const name = "sandbox-guide";
-export const inject = ["tools", "sandboxPolicy"];
+export const inject = ["tools", "sandboxPolicy", "systemPrompt"];
 
 export const Config = z.object({
   toolName: z.string().default("host_view_probe"),
@@ -235,5 +235,32 @@ export function apply(ctx, config = {}) {
   );
   ctx.logger?.("sandbox-guide")?.info?.(
     `registered host-view probe tool "${toolName}" (mode probe + escalation strategy)`,
+  );
+
+  ctx.on(
+    "system-prompt/assemble",
+    (assembly) => {
+      try {
+        let mode = "unknown";
+        try {
+          const policy = ctx.get("sandboxPolicy");
+          mode = policy?.mode ?? "unknown";
+        } catch {
+          /* keep unknown */
+        }
+        const text = [
+          `宿主操作提权策略(自动注入): 当前沙盒模式=${mode}。`,
+          ESCALATION_STRATEGY,
+        ].join("\n");
+        const extra = { name: "sandbox-guide:policy", order: 102, text };
+        return {
+          ...assembly,
+          contexts: [...(assembly.contexts ?? []), extra].sort((a, b) => a.order - b.order),
+        };
+      } catch {
+        return assembly;
+      }
+    },
+    "dsh-sandbox-guide: system-prompt/assemble",
   );
 }

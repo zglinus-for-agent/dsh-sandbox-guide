@@ -2,6 +2,10 @@
 
 本仓库遵循工作流分册:0.x.y 在 scaffolding 分支累积,1.0.0 时随首次合并进入 main。
 
+## 0.1.2
+- 新增: 监听 `system-prompt/assemble`,自动注入"宿主操作提权策略 + 实时沙盒模式"进每个会话每轮的 system prompt(inject 增加 `systemPrompt`;contexts 追加 `{name, order, text}` 并按 order 排序,`assembly.contexts` 缺失时兜底空数组,handler 全程 try/catch 降级返回原 assembly);
+- 背景: 对比会话证实 host_view_probe 为"被动工具",无约束任务中模型不主动调用,策略不可见;转为事件自动注入后,策略每轮默认可见,无需模型主动探测。
+
 ## 0.1.1
 - 修复: @deepseek-ai/schemastery 改为默认导入(`import z from ...`),修正 `Schema` 命名导入崩溃;
 - 修复: output.schema 改为 plain JSON-Schema(满足 dsh-tools enforced subset),移除 `.optional()` 与 `z.object` 用法;
