@@ -2,6 +2,18 @@
   "name": "dsh-sandbox-guide",
   "version": "1.0.0",
   "description": "Sandbox mode probe and host-visibility detector with an embedded host-operation privilege-escalation strategy for DSH (cordis).",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zglinus-for-agent/dsh-sandbox-guide.git"
+  },
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "sandbox",
+    "approval",
+    "escalation",
+    "cordis"
+  ],
   "type": "module",
   "main": "index.js",
   "dsh": {
