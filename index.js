@@ -244,7 +244,7 @@ export function apply(ctx, config = {}) {
         let mode = "unknown";
         try {
           const policy = ctx.get("sandboxPolicy");
-          mode = policy?.mode ?? "unknown";
+          mode = policy?.mode ?? policy?.defaultMode ?? "unknown";
         } catch {
           /* keep unknown */
         }
