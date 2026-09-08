@@ -1,0 +1,5 @@
+# dsh-sandbox-guide bundle patch
+- insert:
+    - id: sandbox-guide
+      name: dsh-sandbox-guide
+      config: {}
