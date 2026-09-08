@@ -1,6 +1,6 @@
 {
   "name": "dsh-sandbox-guide",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Sandbox mode probe and host-visibility detector with an embedded host-operation privilege-escalation strategy for DSH (cordis).",
   "type": "module",
   "main": "index.js",

@@ -11,14 +11,14 @@
 
 import { execFileSync } from "node:child_process";
 import { existsSync, readdirSync } from "node:fs";
-import { Schema } from "@deepseek-ai/schemastery";
+import z from "@deepseek-ai/schemastery";
 import { defineTool } from "@deepseek-ai/dsh-tools";
 
 export const name = "sandbox-guide";
 export const inject = ["tools", "sandboxPolicy"];
 
-export const Config = Schema.object({
-  toolName: Schema.string().default("host_view_probe"),
+export const Config = z.object({
+  toolName: z.string().default("host_view_probe"),
 });
 
 /**
@@ -201,19 +201,27 @@ export function apply(ctx, config = {}) {
       description,
       parameters: {},
       output: {
-        schema: Schema.object({
-          mode: Schema.string(),
-          workspaceRoot: Schema.any().optional(),
-          extraRoots: Schema.array(Schema.any()).optional(),
-          hostVisibility: Schema.object({
-            xDisplaySeen: Schema.boolean(),
-            waylandSeen: Schema.boolean(),
-            vncPorts: Schema.array(Schema.string()),
-            procUsersVisible: Schema.number(),
-            homeDirs: Schema.array(Schema.string()),
-          }),
-          guidance: Schema.string(),
-        }),
+        schema: {
+          type: "object",
+          additionalProperties: false,
+          properties: {
+            mode: { type: "string", required: true },
+            workspaceRoot: { oneOf: [{ type: "string" }, { type: "null" }] },
+            extraRoots: { type: "array", items: { type: "string" } },
+            hostVisibility: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                xDisplaySeen: { type: "boolean", required: true },
+                waylandSeen: { type: "boolean", required: true },
+                vncPorts: { type: "array", items: { type: "string" } },
+                procUsersVisible: { type: "number", required: true },
+                homeDirs: { type: "array", items: { type: "string" } },
+              },
+            },
+            guidance: { type: "string", required: true },
+          },
+        },
         render(_args, value) {
           return [{ type: "text", text: JSON.stringify(value, null, 2) }];
         },
